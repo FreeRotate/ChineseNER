@@ -20,14 +20,11 @@ class ContentLabel(object):
 
 def load_dataset(file_path):
     dataset = []
-    with open(file_path, 'r', encoding='utf-8') as fp:
-        file = json.load(fp)
+    with open(file_path, 'r', encoding='utf-8') as file:
         for line in file.readlines():
-            line = line.strip('\n')
-            content, label = line.split('\t')
-            dataset.append(ContentLabel(content, label))
+            item = json.loads(line)
+            dataset.append(item)
     return dataset
-
 
 class Vocab(object):
     def __init__(self):
@@ -37,7 +34,7 @@ class Vocab(object):
     def add(self, dataset, test_file=False):
         id = len(self.word2id)
         for item in dataset:
-            for word in item.content:
+            for word in item['text']:
                 if word not in self.word2id:
                     self.word2id.update({word: id})
                     id += 1
