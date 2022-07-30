@@ -7,8 +7,6 @@ import argparse
 from utils import load_dataset, Vocab, DataLoader
 from config import Config
 from train import train
-from test import test
-from predict import predict
 from importlib import import_module
 
 parser = argparse.ArgumentParser(description='NER')
@@ -16,7 +14,7 @@ parser.add_argument('--model', type=str, default='CNN', help='CNN, GRU, LSTM, Tr
 args = parser.parse_args()
 
 if __name__ == '__main__':
-    dataset = './data/NewsTitle/'
+    dataset = './data/CLUENER/'
     config = Config(dataset=dataset)
 
     train_CL = load_dataset(config.train_path)
@@ -37,5 +35,3 @@ if __name__ == '__main__':
     model = lib.Model(len(vocab), config).to(config.device)
 
     train(model=model, train_loader=train_loader, dev_loader=dev_loader, config=config, vocab=vocab)
-    test(model=model, test_loader=dev_loader, config=config, vocab=vocab)
-    predict(model=model, test_loader=test_loader, config=config, vocab=vocab)
