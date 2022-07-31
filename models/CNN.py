@@ -25,19 +25,15 @@ class Model(nn.Module):
         self.fc = nn.Linear(self.out_size, self.num_classes)
         self.loss_fct = nn.CrossEntropyLoss()
 
-    def forward(self, word_ids, label_ids=None):
+    def forward(self, word_ids, label_ids=None, label_mask=None):
         """
 
         :param word_ids: batch_size * max_seq_len
         :param label_ids: batch_size
         :return:
         """
-        x = self.embed(word_ids)
-        x = x.permute(0,2,1)
-        x = [conv(x).squeeze(-1) for conv in self.convs]
-        x = torch.cat(tuple(x), dim=-1).contiguous()
-        x = self.fc(x)
-        label_predict = x
+        word_embed = self.embed(word_ids)
+        #TODO
         if label_ids != None:
             loss = self.loss_fct(label_predict, label_ids)
         else:
