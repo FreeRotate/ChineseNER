@@ -63,7 +63,7 @@ class DataLoader(object):
 
 def batch_variable(batch_data, vocab, config):
     batch_size = len(batch_data)
-    max_seq_len = max(len(insts['text']) for insts in batch_data)
+    max_seq_len = 1 + max(len(insts['text']) for insts in batch_data)
     label_ids = torch.zeros((batch_size, max_seq_len), dtype=torch.long)
     label_mask = torch.zeros((batch_size, max_seq_len), dtype=torch.bool)
 
@@ -71,4 +71,12 @@ def batch_variable(batch_data, vocab, config):
     for index, item in enumerate(batch_data):
         sentence = item['text']
         seq_len = len(sentence) + 1
-        print()
+        for label_name, tag in item['label'].items():
+            for words, posies in tag.items():
+                for posi in posies:
+                    start, end = posi[0], posi[1]
+                    #TODO 标签编码
+
+
+
+
