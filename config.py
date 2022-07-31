@@ -23,10 +23,10 @@ class Config(object):
         self.lr = 1e-3
         self.require_improvement = 2
 
-        self.class_list = [x.strip() for x in open(self.class_path, encoding='utf-8').readlines()]
-        self.num_classes = len(self.class_list)                     #类别数量
-        self.id2class = dict(enumerate(self.class_list))            #标号转类别
-        self.class2id = {j: i for i, j in self.id2class.items()}    #类别转标号
+        self.label_list = [x.strip() for x in open(self.class_path, encoding='utf-8').readlines()]
+        self.num_labels = len(self.label_list)                     #类别数量
+        self.id2label = dict(enumerate(self.label_list))            #标号转类别
+        self.label2id = {j: i for i, j in self.id2label.items()}    #类别转标号
 
         self.kernal_sizes = (2, 3, 4)
         self.kernel_nums =(50, 100, 150)
