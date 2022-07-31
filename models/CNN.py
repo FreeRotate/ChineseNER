@@ -9,7 +9,7 @@ import torch.nn as nn
 class Model(nn.Module):
     def __init__(self, vocab_len, config):
         super().__init__()
-        self.num_classes = config.num_classes
+        self.num_classes = config.num_labels
         self.embed = nn.Embedding(num_embeddings=vocab_len, embedding_dim=config.embed_dim)
         self.convs = nn.ModuleList(
             [nn.Sequential
