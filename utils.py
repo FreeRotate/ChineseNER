@@ -63,19 +63,24 @@ class DataLoader(object):
 
 def batch_variable(batch_data, vocab, config):
     batch_size = len(batch_data)
-    max_seq_len = 1 + max(len(insts['text']) for insts in batch_data)
+    max_seq_len = max(len(insts['text']) for insts in batch_data)
+    word_ids = torch.zeros((batch_size, max_seq_len), dtype=torch.long)
     label_ids = torch.zeros((batch_size, max_seq_len), dtype=torch.long)
     label_mask = torch.zeros((batch_size, max_seq_len), dtype=torch.bool)
 
-    sentence_list = []
     for index, item in enumerate(batch_data):
         sentence = item['text']
-        seq_len = len(sentence) + 1
+        seq_len = len(sentence)
+        label_mask[index, :seq_len].fill_(1)
+        word_ids[index, :seq_len] = torch.tensor([vocab.word2id[word] for word in sentence])
+
         for label_name, tag in item['label'].items():
             for words, posies in tag.items():
                 for posi in posies:
                     start, end = posi[0], posi[1]
-                    #TODO 标签编码
+                    label_ids[index, start] = config.label2id['B-'+label_name]
+                    label_ids[index, start+1:end+1] = config.label2id['I-'+label_name]
+    return word_ids.to(config.device), label_ids.to(config.device), label_mask.to(config.device)
 
 
 
