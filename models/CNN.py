@@ -33,7 +33,7 @@ class Model(nn.Module):
         :return:
         """
         word_embed = self.embed(word_ids)
-        #TODO
+        label_predict = None
         if label_ids != None:
             loss = self.loss_fct(label_predict, label_ids)
         else:
