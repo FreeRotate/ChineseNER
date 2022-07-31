@@ -20,8 +20,8 @@ def train(model, train_loader, dev_loader, config, vocab):
     for epoch in range(0, config.epochs):
         for batch_idx, batch_data in enumerate(train_loader):
             model.train()   #训练模型
-            word_ids, label_ids = batch_variable(batch_data, vocab, config)
-            loss, label_predict = model(word_ids, label_ids)
+            word_ids, label_ids, label_mask = batch_variable(batch_data, vocab, config)
+            loss, label_predict = model(word_ids, label_ids, label_mask)
 
             loss_all = np.append(loss_all, loss.data.item())
             label_all = np.append(label_all, label_ids.data.cpu().numpy())
@@ -52,8 +52,8 @@ def evaluate(config, model, dev_loader, vocab, output_dict=False):
     label_all = []
     with torch.no_grad():
         for batch_idx, batch_data in enumerate(dev_loader):
-            word_ids, label_ids = batch_variable(batch_data, vocab, config)
-            loss, label_predict = model(word_ids, label_ids)
+            word_ids, label_ids, label_mask = batch_variable(batch_data, vocab, config)
+            loss, label_predict = model(word_ids, label_ids, label_mask)
 
             loss_all = np.append(loss_all, loss.data.item())
             predict_all.append(label_predict.data)
