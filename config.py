@@ -21,6 +21,7 @@ class Config(object):
         self.batch_size = 64
         self.max_seq = 50
         self.lr = 1e-3
+        self.dropout_rate = 0.1
         self.require_improvement = 2
 
         self.label_list = [x.strip() for x in open(self.class_path, encoding='utf-8').readlines()]
