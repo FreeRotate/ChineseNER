@@ -18,7 +18,7 @@ class Model(nn.Module):
         self.loss_fct = nn.CrossEntropyLoss()
 
     def forward(self, word_ids, label_ids=None, label_mask=None):
-        word_embed = self.embed(word_ids.permute(1,0))
+        word_embed = self.embed(word_ids)
         lstm_embed, _ = self.lstm(word_embed)
         lstm_embed = self.dropout(lstm_embed)
         lstm_embed = self.ln(lstm_embed)
