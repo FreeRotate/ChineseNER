@@ -81,7 +81,3 @@ def batch_variable(batch_data, vocab, config):
                     label_ids[index, start] = config.label2id['B-'+label_name]
                     label_ids[index, start+1:end+1] = config.label2id['I-'+label_name]
     return word_ids.to(config.device), label_ids.to(config.device), label_mask.to(config.device)
-
-
-
-
