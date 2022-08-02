@@ -7,6 +7,7 @@ import argparse
 from utils import load_dataset, Vocab, DataLoader
 from config import Config
 from train import train
+from test import test
 from importlib import import_module
 
 parser = argparse.ArgumentParser(description='NER')
@@ -35,3 +36,4 @@ if __name__ == '__main__':
     model = lib.Model(len(vocab), config).to(config.device)
 
     train(model=model, train_loader=train_loader, dev_loader=dev_loader, config=config, vocab=vocab)
+    test(model=model, test_loader=dev_loader, config=config, vocab=vocab)
