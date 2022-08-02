@@ -6,6 +6,7 @@
 import torch
 import numpy as np
 import torch.optim as optim
+from torch.optim import lr_scheduler
 from utils import batch_variable
 from seqeval.metrics import accuracy_score, classification_report, f1_score
 
@@ -15,6 +16,7 @@ def train(model, train_loader, dev_loader, config, vocab):
     dev_best_f1 = float('-inf')
     avg_loss = []
     optimizer = optim.AdamW(params=model.parameters(), lr=config.lr)
+    scheduler = lr_scheduler.ExponentialLR(optimizer, gamma=0.99)
     for epoch in range(0, config.epochs):
         train_right, train_total = 0, 0
         for batch_idx, batch_data in enumerate(train_loader):
@@ -36,10 +38,14 @@ def train(model, train_loader, dev_loader, config, vocab):
 
             if batch_idx % 10 == 0:
                 print("Epoch:{}--------Iter:{}--------train_loss:{:.3f}--------train_acc:{:.3f}".format(epoch+1, batch_idx+1, np.array(avg_loss).mean(), train_right/train_total))
+
+        scheduler.step()
+
         dev_loss, dev_acc, dev_f1, dev_report = evaluate(model, dev_loader, config, vocab)
         msg = "Dev Loss:{:.3f}--------Dev Acc:{:.3f}--------Dev F1:{:.3f}"
         print(msg.format(dev_loss, dev_acc, dev_f1))
         print(dev_report)
+
 
         if dev_best_f1 < dev_f1:
             dev_best_f1 = dev_f1
