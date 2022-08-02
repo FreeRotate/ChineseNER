@@ -31,7 +31,7 @@ class Vocab(object):
         self.id2word = None
         self.word2id = {'PAD':0}
 
-    def add(self, dataset, test_file=False):
+    def add(self, dataset):
         id = len(self.word2id)
         for item in dataset:
             for word in item['text']:
@@ -62,22 +62,34 @@ class DataLoader(object):
 
 
 def batch_variable(batch_data, vocab, config):
+    sentence_list = []
+    labels_list = []
+
+    for index, item in enumerate(batch_data):
+        sentence = item['text']
+        labels = ['O'] * len(sentence)
+
+        for label_name, tag in item['label'].items():
+            for sub_name, sub_index in tag.items():
+                for start_index, end_index in sub_index:
+                    assert ''.join(sentence[start_index:end_index + 1]) == sub_name
+                    if start_index == end_index:
+                        labels[start_index] = 'B-' + label_name
+                    else:
+                        labels[start_index] = 'B-' + label_name
+                        labels[start_index + 1:end_index + 1] = ['I-' + label_name] * (len(sub_name) - 1)
+        sentence_list.append(sentence)
+        labels_list.append(labels)
+
     batch_size = len(batch_data)
     max_seq_len = max(len(insts['text']) for insts in batch_data)
     word_ids = torch.zeros((batch_size, max_seq_len), dtype=torch.long)
     label_ids = torch.zeros((batch_size, max_seq_len), dtype=torch.long)
     label_mask = torch.zeros((batch_size, max_seq_len), dtype=torch.bool)
-
-    for index, item in enumerate(batch_data):
-        sentence = item['text']
-        seq_len = len(sentence)
-        label_mask[index, :seq_len].fill_(1)
-        word_ids[index, :seq_len] = torch.tensor([vocab.word2id[word] for word in sentence])
-
-        for label_name, tag in item['label'].items():
-            for words, posies in tag.items():
-                for posi in posies:
-                    start, end = posi[0], posi[1]
-                    label_ids[index, start] = config.label2id['B-'+label_name]
-                    label_ids[index, start+1:end+1] = config.label2id['I-'+label_name]
+    index = 0
+    for sentence, labels in zip(sentence_list, labels_list):
+        word_ids[index, :len(sentence)] = torch.tensor([vocab.word2id[word] for word in sentence])
+        label_ids[index, :len(labels)] = torch.tensor([config.label2id[label] for label in labels])
+        label_mask[index, :len(labels)].fill_(1)
+        index += 1
     return word_ids.to(config.device), label_ids.to(config.device), label_mask.to(config.device)
