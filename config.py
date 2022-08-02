@@ -4,6 +4,7 @@
 # @Author: LauTrueYes
 # @Date  : 2022/7/30 20:34
 import torch
+from crf import CRF
 
 class Config(object):
     def __init__(self, dataset):
@@ -17,9 +18,8 @@ class Config(object):
 
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-        self.epochs = 1
+        self.epochs = 50
         self.batch_size = 64
-        self.max_seq = 50
         self.lr = 1e-3
         self.dropout_rate = 0.1
         self.require_improvement = 2
@@ -29,7 +29,5 @@ class Config(object):
         self.id2label = dict(enumerate(self.label_list))            #标号转类别
         self.label2id = {j: i for i, j in self.id2label.items()}    #类别转标号
 
-        self.kernal_sizes = (2, 3, 4)
-        self.kernel_nums =(50, 100, 150)
-        self.num_filters = 128
-        self.embed_dim = 200
+        self.embed_dim = 128
+        self.hidden_size = 384
