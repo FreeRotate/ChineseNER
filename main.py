@@ -11,7 +11,7 @@ from test import test
 from importlib import import_module
 
 parser = argparse.ArgumentParser(description='NER')
-parser.add_argument('--model', type=str, default='LSTM', help='CNN, GRU, LSTM, TransformerEncoder')  #在defaule中修改所需的模型
+parser.add_argument('--model', type=str, default='LSTM', help='GRU, LSTM')  #在defaule中修改所需的模型
 args = parser.parse_args()
 
 if __name__ == '__main__':
