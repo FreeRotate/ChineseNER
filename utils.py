@@ -5,18 +5,6 @@
 # @Date  : 2022/7/30 20:35
 import json
 import torch
-import pandas as pd
-
-class ContentLabel(object):
-    def __init__(self, content, label):
-        self.content = content
-        self.label = label
-    def __str__(self):
-        return str(self.__dict__)
-
-    def __repr__(self):
-        return str(self.__dict__)
-
 
 def load_dataset(file_path):
     dataset = []
